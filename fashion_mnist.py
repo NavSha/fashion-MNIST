@@ -1,7 +1,8 @@
-import tensorflow
-from tensorflow import keras
+import keras
 import numpy as np
 import os
+from keras.callbacks import ModelCheckpoint, EarlyStopping
+import matplotlib.pyplot as plt
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 #laod the Fashion MNIST data
@@ -34,9 +35,11 @@ model = keras.Sequential([
 # compile the model defined above
 model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
-#train the model on the partial training data, find training and validation acc
-#and loss and save results in history object
-history = model.fit(train_images,train_labels, epochs = 5, batch_size = 128, validation_data = (val_train_images,val_train_labels))
+#Add callbacks for more efficient training of the models
+callbacks_list = [EarlyStopping(monitor = 'acc', patience = 5,verbose=1), ModelCheckpoint(filepath='fashion_mnist_weights.h5',monitor='val_loss',verbose = 1, save_best_only = True) ]
+
+#train the model on the partial training data and save results in history object
+history = model.fit(train_images,train_labels, epochs = 200, batch_size = 128, validation_data = (val_train_images,val_train_labels), callbacks = callbacks_list)
 
 #save model weights in a h5 file
 model.save('fashion_mnist_weights.h5')
@@ -46,7 +49,6 @@ with open('fashion_mnist_model.json',"w") as json_file:
     json_file.write(model_json)
 
 #plot loss and validation curves during Training
-import matplotlib.pyplot as plt
 acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
