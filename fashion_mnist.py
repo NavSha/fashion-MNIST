@@ -36,7 +36,14 @@ model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metr
 
 #train the model on the partial training data, find training and validation acc
 #and loss and save results in history object
-history = model.fit(train_images,train_labels, epochs = 50, batch_size = 128, validation_data = (val_train_images,val_train_labels))
+history = model.fit(train_images,train_labels, epochs = 5, batch_size = 128, validation_data = (val_train_images,val_train_labels))
+
+#save model weights in a h5 file
+model.save('fashion_mnist_weights.h5')
+#save model in a json file
+model_json = model.to_json()
+with open('fashion_mnist_model.json',"w") as json_file:
+    json_file.write(model_json)
 
 #plot loss and validation curves during Training
 import matplotlib.pyplot as plt
@@ -60,6 +67,6 @@ plt.legend()
 plt.show()
 
 #evaluate the model on the test dataset
-#test_loss,test_accuracy  = model.evaluate(test_images,test_labels)
+test_loss,test_accuracy  = model.evaluate(test_images,test_labels)
 
-#print ("Test accuracy :",test_accuracy)
+print ("Test accuracy :",test_accuracy)
