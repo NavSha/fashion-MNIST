@@ -36,10 +36,10 @@ model = keras.Sequential([
 model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
 #Add callbacks for more efficient training of the models
-callbacks_list = [EarlyStopping(monitor = 'acc', patience = 5,verbose=1), ModelCheckpoint(filepath='fashion_mnist_weights.h5',monitor='val_loss',verbose = 1, save_best_only = True) ]
+callbacks_list = [EarlyStopping(monitor = 'val_loss', patience = 5,verbose=1), ModelCheckpoint(filepath='fashion_mnist_weights.h5',monitor='val_loss',verbose = 1, save_best_only = True) ]
 
 #train the model on the partial training data and save results in history object
-history = model.fit(train_images,train_labels, epochs = 200, batch_size = 128, validation_data = (val_train_images,val_train_labels), callbacks = callbacks_list)
+history = model.fit(partial_train_images,partial_train_labels, epochs = 200, batch_size = 128, validation_data = (val_train_images,val_train_labels), callbacks = callbacks_list)
 
 #save model weights in a h5 file
 model.save('fashion_mnist_weights.h5')
