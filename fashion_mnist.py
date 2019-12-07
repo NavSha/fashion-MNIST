@@ -1,8 +1,9 @@
 import keras
 import numpy as np
 import os
-from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
 import matplotlib.pyplot as plt
+import datetime
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 #laod the Fashion MNIST data
@@ -25,7 +26,7 @@ partial_train_labels = train_labels[10000:]
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
-#define a 2-layer neural network
+#define a 3-layer neural network
 model = keras.Sequential([
     keras.layers.Flatten(input_shape = (28,28)),
     keras.layers.Dense(512, activation = 'relu'),
@@ -39,7 +40,8 @@ model = keras.Sequential([
 model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
 #Add callbacks for more efficient training of the models
-callbacks_list = [EarlyStopping(monitor = 'val_loss', patience = 10,verbose=1), ModelCheckpoint(filepath='fashion_mnist_weights.h5',monitor='val_loss',verbose = 1, save_best_only = True), ReduceLROnPlateau(monitor='val_loss',factor = 0.1, patience = 5) ]
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+callbacks_list = [EarlyStopping(monitor = 'val_loss', patience = 10,verbose=1), ModelCheckpoint(filepath='fashion_mnist_weights.h5',monitor='val_loss',verbose = 1, save_best_only = True), ReduceLROnPlateau(monitor='val_loss',factor = 0.1, patience = 5, verbose = 1),TensorBoard(log_dir=log_dir, histogram_freq=1, batch_size=128, write_graph = True, write_grads = True, write_images = True)]
 
 #train the model on the partial training data and save results in history object
 history = model.fit(partial_train_images,partial_train_labels, epochs = 200, batch_size = 128, validation_data = (val_train_images,val_train_labels), callbacks = callbacks_list)
