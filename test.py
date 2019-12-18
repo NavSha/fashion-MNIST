@@ -10,7 +10,10 @@ model.summary()
 fashion_mnist = keras.datasets.fashion_mnist
 (_,_),(test_images,test_labels) = fashion_mnist.load_data()
 
-# evaluate model on the test dataset 
+test_images = test_images.reshape((10000,28,28,1))
+test_images = test_images/255.0
+
+# evaluate model on the test dataset
 loss, accuracy = model.evaluate(test_images,test_labels)
 
 print("Accuracy of the model on test dataset: ", accuracy)
