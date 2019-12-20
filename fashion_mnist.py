@@ -86,9 +86,9 @@ def prepare_val_data(trainX, trainY):
     return partial_trainX, partial_trainY, valX, valY
 
 
-def train_and_compile_model(trainX, trainY, valX, valY):
+def train_model(trainX, trainY, valX, valY):
 
-    ''' Trains and compiles the model using the partial training data and validation data.
+    ''' Trains the model using the partial training data and validation data.
 
     Args:
         trainX (ndarray): Training images
@@ -176,7 +176,7 @@ def run_validation_harness():
     #prepare validation data
     partial_train_images, partial_train_labels, val_images, val_labels = prepare_val_data(train_images, train_labels)
     # train the model
-    history = train_and_compile_model(partial_train_images, partial_train_labels, val_images, val_labels)
+    history = train_model(partial_train_images, partial_train_labels, val_images, val_labels)
     #save model details
     save_model()
     # learning curves
